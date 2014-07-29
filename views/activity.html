@@ -1,0 +1,51 @@
+<div ng-show="isLoaded && case" ng-cloak class="row">			
+	<div  class="col-md-4 col-sm-6">
+		<ul class="list-unstyled" id="case-list-view">
+			<li>Client: {{case.get('client')}}</li>
+			<li>Case Number: {{case.get('case_no')}}</li>
+			<li>Subject: {{case.get('first_name') + ' ' + case.get('last_name') }}</li>
+			<li>Date: {{case.get('activity_date')}}</li>		
+		</ul>
+	</div>
+	<div class="text-right col-md-8 col-sm-6">
+		<a class="btn btn-default" href="#/">Return to Case Grid</a>
+	</div>
+	<div class="col-sm-12" style="margin: 30px"></div>
+	<div class="col-sm-12 activity-item" ng-repeat="(index, act) in activities" ng-class="{edited:act == editActRecord}">
+		<div class="col-md-2">			  			
+		  <i class="glyphicon glyphicon-info-sign indicator pull-right" ng-class="{uploading: dirtyActivites.indexOf(act.getId()) > -1}"></i>
+		</div>
+		<div class="col-md-2">
+			<span>{{act.get('activity_time') | date:'MM/dd/yyyy HH:mm a' }}</span>	 
+    	<input ng-keyup="$event.keyCode == 13 && saveAct(act,editAct)" ng-model="editAct.activity_time"  type="text" class="form-control" required/>
+		</div>
+		<div class="col-md-8">
+			<span>{{act.get('activity')}}</span>	 
+			<input ng-keyup="$event.keyCode == 13 && saveAct(act,editAct)" ng-model="editAct.activity" type="text" class="form-control" required>					
+
+			<a class="action pull-right" href="" ng-really-message="Are you sure?" ng-really-click="deleteAct(act)" ><i class="glyphicon glyphicon-trash"></i><span class="sr-only">Close</span></a>
+			<a class="action pull-right" href="" ng-click="updateAct(act)"><i class="glyphicon glyphicon-edit"></i> <span class="sr-only">Edit</span></a>&nbsp;&nbsp;
+			
+		</div>
+	</div>
+
+	<div class="col-sm-12 activity">
+		<form>
+			<div class="col-md-2">
+			</div>
+			<div class="col-md-2">						
+	      <input placeholder="Enter Time" ng-keyup="$event.keyCode == 13 && addActivity(activity)" ng-model="activity.activity_time" type="time" class="form-control" required/>                         
+			</div>
+			<div class="col-md-8">				
+				<input placeholder="Enter Activity" ng-keyup="$event.keyCode == 13 && addActivity(activity)" ng-model="activity.activity" type="text" required class="form-control">
+			</div>
+		</form>
+	</div>
+</div>	
+
+<div ng-show="isLoaded && !case" ng-cloak class="row">
+	<h2 class="text-center" style="color: #999">Case not found!</h2>
+	<div class="text-center">
+		<a class="btn btn-default" href="#/">Return to Case Grid</a>
+	</div>
+</div>

@@ -13,7 +13,7 @@
 					</tr>
 				</thead>
 				<tbody>
-					<tr ng-repeat="(index, case) in cases | orderBy:caseOrder:reverse" ng-class="{edited:case == editCaseRecord}" class="case-item">						
+					<tr ng-dblclick="updateCase(case,$event)" ng-repeat="(index, case) in cases | orderBy:caseOrder:reverse" ng-class="{edited:case == editCaseRecord}" class="case-item">						
 						<td>
 							<span>{{case.get('client')}}</span>
 							<input ng-keyup="$event.keyCode == 13 && saveCase(case,editCase)"  ng-model="editCase.client" class="form-control" type="text">
@@ -31,14 +31,14 @@
 							<input ng-keyup="$event.keyCode == 13 && saveCase(case,editCase)" ng-model="editCase.first_name" class="form-control" type="text">													
 						</td>
 						<td>
-							<a href="#/activity/{{case.getId()}}"><span>{{case.get('activity_date')}}</span></a>
+							<a href="#/activity/{{case.getId()}}"><span>{{case.get('activity_date')| date:'MM/dd/yyyy' }}</span></a>
 							<input ng-keyup="$event.keyCode == 13 && saveCase(case,editCase)" ng-model="editCase.activity_date" class="form-control" type="text">
 						</td>
-						<td >							
-							<a class="actionEdit" href="" ng-click="saveCase(case,editCase)"><i class="glyphicon glyphicon-ok"></i> <span class="sr-only">Ok</span></a>							
-
-							<a class="action" href="" ng-click="updateCase(case)"><i class="glyphicon glyphicon-edit"></i> <span class="sr-only">Edit</span></a>
+						<td >																					
 							<a class="action" href="" ng-really-message="Are you sure?" ng-really-click="deleteCase(case)" ><i class="glyphicon glyphicon-trash"></i><span class="sr-only">Close</span></a>
+							<a ng-click="updateCase(case,$event)" class="action" href=""><i class="glyphicon glyphicon-edit"></i><span class="sr-only">Edit</span></a>
+
+							<a ng-click="saveCase(case,editCase)" class="actionEdit" href=""><i class="glyphicon glyphicon-ok"></i><span class="sr-only">Ok</span></a>
 						</td>
 					</tr>
 				</tbody>

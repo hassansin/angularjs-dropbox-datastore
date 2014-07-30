@@ -4,42 +4,55 @@
 			<li>Client: {{case.get('client')}}</li>
 			<li>Case Number: {{case.get('case_no')}}</li>
 			<li>Subject: {{case.get('first_name') + ' ' + case.get('last_name') }}</li>
-			<li>Date: {{case.get('activity_date')}}</li>		
+			<li>Date: {{case.get('activity_date')|date:'MM/dd/yyyy'}}</li>		
 		</ul>
-	</div>
+	</div>	
 	<div class="text-right col-md-8 col-sm-6">
 		<a class="btn btn-default" href="#/">Return to Case Grid</a>
 	</div>
 	<div class="col-sm-12" style="margin: 30px"></div>
-	<div class="col-sm-12 activity-item" ng-repeat="(index, act) in activities" ng-class="{edited:act == editActRecord}">
+	<div ng-dblclick="updateAct(act,$event)" class="col-sm-12 activity-item" ng-repeat="(index, act) in activities" ng-class="{edited:act == editActRecord}">
 		<div class="col-md-2">			  			
+			<span>{{act.get('activity_type')}}</span>
+			<select class="form-control" ng-model="editAct.activity_type">
+				<option value="">None</option>
+				<option value="Base D">Base D</option>
+				<option value="Base A">Base A</option>
+			</select>
 		  <i class="glyphicon glyphicon-info-sign indicator pull-right" ng-class="{uploading: dirtyActivites.indexOf(act.getId()) > -1}"></i>
 		</div>
 		<div class="col-md-2">
-			<span>{{act.get('activity_time') | date:'MM/dd/yyyy HH:mm a' }}</span>	 
+			<span>{{act.get('activity_time') | date:'MM/dd/yyyy hh:mm a' }}</span>	 
     	<input ng-keyup="$event.keyCode == 13 && saveAct(act,editAct)" ng-model="editAct.activity_time"  type="text" class="form-control" required/>
 		</div>
 		<div class="col-md-8">
 			<span>{{act.get('activity')}}</span>	 
-			<input ng-keyup="$event.keyCode == 13 && saveAct(act,editAct)" ng-model="editAct.activity" type="text" class="form-control" required>					
+			<input ng-keyup="$event.keyCode == 13 && saveAct(act,editAct)" ng-model="editAct.activity" type="text" class="form-control" required>								
+			<a class="action pull-right" href="" ng-really-message="Are you sure?" ng-really-click="deleteAct(act)" ><i class="glyphicon glyphicon-trash"></i><span class="sr-only">Delete</span></a>						
 
-			<a class="action pull-right" href="" ng-really-message="Are you sure?" ng-really-click="deleteAct(act)" ><i class="glyphicon glyphicon-trash"></i><span class="sr-only">Close</span></a>
-			<a class="action pull-right" href="" ng-click="updateAct(act)"><i class="glyphicon glyphicon-edit"></i> <span class="sr-only">Edit</span></a>&nbsp;&nbsp;
-			
+			<a ng-click="updateAct(act,$event)" class="action pull-right" href=""><i class="glyphicon glyphicon-edit"></i><span class="sr-only">Edit</span></a>
 		</div>
 	</div>
 
-	<div class="col-sm-12 activity">
+	<div class="col-sm-12 activity-list">
 		<form>
 			<div class="col-md-2">
+				<select class="form-control" ng-model="activity.activity_type">
+					<option value="">None</option>
+					<option value="Base D">Base D</option>
+					<option value="Base A">Base A</option>
+				</select>
 			</div>
 			<div class="col-md-2">						
-	      <input placeholder="Enter Time" ng-keyup="$event.keyCode == 13 && addActivity(activity)" ng-model="activity.activity_time" type="time" class="form-control" required/>                         
+	      <input ng-do-focus placeholder="Enter Time" ng-keyup="$event.keyCode == 13 && addActivity(activity)" ng-model="activity.activity_time" type="text" class="form-control"  required/>                         	      
 			</div>
 			<div class="col-md-8">				
 				<input placeholder="Enter Activity" ng-keyup="$event.keyCode == 13 && addActivity(activity)" ng-model="activity.activity" type="text" required class="form-control">
 			</div>
 		</form>
+	</div>
+	<div class="text-right col-md-12">
+		<a class="btn btn-default" href="#/">Return to Case Grid</a>
 	</div>
 </div>	
 

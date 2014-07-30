@@ -3,12 +3,16 @@
 *{
 	font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
-.action{visibility: hidden;}
+html,body{height: 100%;}
+.page{margin-bottom: 50px;}
+.table>thead>tr>th {vertical-align: top}
+.action{visibility: hidden;font-size: 16px;}
+.action-edit{display: none;}
 tr.case-item:hover .action {visibility:visible;}
 tr.case-item td input{display: none}
 tr.edited.case-item td input{display: inline}
-tr.edited td a,tr.edited td span{display: none}
-tr.case-item td a.actionEdit{display: none;}
+tr.edited td a,tr.edited td span{display: none;}
+tr.case-item td a.actionEdit{display: none;  }
 tr.edited td a.actionEdit{display: inline;}
 
 
@@ -22,17 +26,27 @@ ul#case-list-view li{
 	line-height: 1.1;	
 	border-radius: 4px;
 }
+div.activity-list{
+	margin-bottom: 20px;
+}
 div.activity-item{
 	margin:10px 0;
 }
 
-div.activity-item input{display: none}
-div.activity-item.edited input{display: inline}
+div.activity-item input,div.activity-item select{display: none}
+div.activity-item.edited input,div.activity-item.edited select{display: inline}
 div.activity-item:hover .action {visibility:visible;}
-div.activity-item.edited a,div.activity-item.edited span{display: none}
+div.activity-item.edited a,div.activity-item.edited span,div.activity-item.edited i.indicator{display: none ;}
 div.activity-item a.actionEdit{display: none;}
-div.activity-item.edited a.actionEdit{display: inline;}
-p#status { position: absolute; bottom: 0; right: 20px; float: right; font-size: 16px;color:#666; }
-p#mtime { position: absolute; bottom: 20px; right: 20px; float: right; font-size: 16px;color:#666; }
+p#status { position: absolute; bottom: 0; right: 20px; float: right; font-size: 16px;color:#c0c0c0;font-weight: bold }
+p#mtime { position: absolute; bottom: 20px; right: 20px; float: right; font-size: 16px;color:#c0c0c0;font-weight: bold; }
 i.indicator {color:green;font-size: 17px;}
 i.indicator.uploading{color:red;}
+.table tr.edited td {padding: 2px;}
+.table tr.edited td input{border-radius: 0;}
+div.activity-item.edited  {padding: 2px;}
+div.activity-item.edited input{border-radius: 0;}
+
+@media (max-width:767px) {
+	.action {visibility: visible;}	
+}

@@ -1,9 +1,12 @@
-
 angular.module('timelineApp.controllers',[])
   .controller('loginCtrl',['$rootScope','$location','$window','dropstoreClient',function($rootScope,$location,$window,dropstoreClient){        
-
+    if($rootScope.datastore===undefined){            
+      $location.path('/login');
+    } else{                
+      $location.path('/');
+    }    
   }])
-  .controller('caseCtrl',function($scope,$rootScope,$location){    
+  .controller('caseCtrl',function($scope,$rootScope,$location,$timeout,$filter){    
     var _datastore = null;    
     $scope.orderProp = 'activity_date';
     $scope.reverse = false;
@@ -18,18 +21,31 @@ angular.module('timelineApp.controllers',[])
     $scope.editCase = {};     
     $scope.edited = '';    
     $scope.saveCase = function(c,n){      
-      $scope.editCaseRecord = null; 
-      c.update(n);      
+      n.activity_date = new Date(n.activity_date);
+      if(n.activity_date){
+        $scope.editCaseRecord = null; 
+        if(!angular.equals(c.getFields(),n))
+          c.update(n);        
+      }
+      
     };
-    $scope.updateCase = function(c){            
+    $scope.updateCase = function(c,e){          
       $scope.editCase = c.getFields();      
+      $scope.editCase.activity_date = $filter('date')($scope.editCase.activity_date,'MM/dd/yyyy')
       $scope.editCaseRecord = c; 
       $scope.newCase = false;         
+      
+      /*if(angular.element(e.target).find('input')[0]){
+        $timeout(function(){
+          angular.element(e.target).find('input')[0].focus();
+        },100);      
+      }      */
     };
     $scope.addCase = function(c){          
       $scope.case = {};    
-      //c.activity_date = $filter('date')(date, format)
-      caseTable.insert(c);
+      c.activity_date = new Date(c.activity_date);
+      if(c.activity_date)
+        caseTable.insert(c);
     };
     $scope.deleteCase = function(c){
       var activities = $rootScope.datastore.getTable('activities').query({caseId:c.getId()});                            
@@ -77,7 +93,7 @@ angular.module('timelineApp.controllers',[])
       $scope.cases =  caseTable.query();      
     }           
   })
-  .controller('activityCtrl',function($scope,$rootScope,$routeParams,$location,$filter){
+  .controller('activityCtrl',function($scope,$rootScope,$routeParams,$location,$filter,$timeout){
     var _datastore = null;  
     $scope.isLoaded = !($rootScope.datastore===undefined); //checks if the datastore is loaded and prevents flicker   
     $scope.caseId = $routeParams.caseId;  // current case id        
@@ -86,42 +102,62 @@ angular.module('timelineApp.controllers',[])
     $scope.case = {}; // current case object
     $scope.editCase = {}; // editing case object
     $scope.edited = '';    // to detect if editing mode, used in ng-class
-    $scope.dirtyActivites = []; // activities that are not synced
-    $scope.isUploading = false; //flag to detect if uploading is in progress
+    $scope.dirtyActivites = []; // activities that are not synced        
 
-    $scope.saveAct = function(a,n){      
-      $scope.editActRecord = null; 
-      a.update(n);      
+    $scope.saveAct = function(a,n){            
+      var matched = n.activity_time.match(/(?:(\d{1,2})(\d{2})(am|pm))|(?:(\d+):(\d+)\s*(am|pm))/i);
+      if(matched){
+        matched = matched.filter(function(x){return x!==undefined});
+      }      
+      if(matched && matched.length === 4){
+        var time = new Date($filter('date')($scope.case.get('activity_date'),'MM/dd/yyyy') + ' ' + matched[1]+':'+matched[2]+' '+matched[3]);        
+        if(time == "Invalid Date"){
+          alert('Invalid Time');
+        }else{
+          n.activity_time = time;
+          $scope.activity = {};          
+          $scope.editActRecord = null;           
+          if(!angular.equals(a.getFields(),n))
+            a.update(n);       
+        }        
+      }   
+      else{
+        alert('Invalid Time')
+      }                     
     };
-    $scope.updateAct = function(a){            
+    $scope.updateAct = function(a,e){            
       $scope.editAct = a.getFields();      
-      $scope.editAct.activity_time = $filter('date')($scope.editAct.activity_time, 'HH:mm')
-      $scope.editActRecord = a;       
+      $scope.editAct.activity_time = $filter('date')($scope.editAct.activity_time, 'hh:mm a')
+      $scope.editActRecord = a;        
+      /*if(angular.element(e.target).find('input')[0]){        
+        $timeout(function(){
+          angular.element(e.target).find('input')[0].focus();
+        },100);      
+      } */          
     };   
 
-    $scope.addActivity = function(a){      
-      $scope.activity = {};          
-      a.caseId = $scope.caseId;
-      activityTable.insert(a);      
+    $scope.addActivity = function(a){            
+      var matched = a.activity_time? a.activity_time.match(/(?:(\d{1,2})(\d{2})(am|pm))|(?:(\d+):(\d+)\s*(am|pm))/i):'';
+      if(matched){
+        matched = matched.filter(function(x){return x!==undefined});
+      }      
+      if(matched && matched.length === 4){
+        var time = new Date($filter('date')($scope.case.get('activity_date'),'MM/dd/yyyy') + ' ' + matched[1]+':'+matched[2]+' '+matched[3]);
+        if(time == "Invalid Date"){
+          alert('Invalid Time');          
+        }
+        else{
+          a.activity_time = time;
+          $scope.activity = {};          
+          a.caseId = $scope.caseId;
+          activityTable.insert(a);                
+        }
+      }
+      $scope.ngDoFocus();                
     };
     $scope.deleteAct= function(a){   
       a.deleteRecord();
-    };
-    $scope.today = function() {
-      $scope.dt = new Date();
     };    
-    $scope.disabled = function(date, mode) {
-      return ( mode === 'day' && ( date.getDay() === 0 || date.getDay() === 6 ) );
-    };
-    $scope.dateOptions = {      
-      formatYear: 'yy',
-      startingDay: 1
-    };
-    $scope.initDate = new Date();    
-    $scope.format = "MM/dd/yyyy hh:mm a";
-    $scope.open = function($event) {      
-      $scope.opened = true;
-    };
     $scope.$on('syncStatusChanged',function(event){      
       if(!$rootScope.datastore.getSyncStatus().uploading){
         $scope.dirtyActivites = [];

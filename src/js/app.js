@@ -52,7 +52,7 @@ angular.module('dropstore',[])
 		};		
 	}])
 
-var app = angular.module('timelineApp',['timelineApp.controllers','dropstore','ngRoute','ui.bootstrap'])
+var app = angular.module('timelineApp',['timelineApp.controllers','dropstore','ngRoute'])
 	.directive('ngReallyClick', [function() {
 	    return {
 	        restrict: 'A',
@@ -66,6 +66,14 @@ var app = angular.module('timelineApp',['timelineApp.controllers','dropstore','n
 	        }
 	    }
 	}])
+  .directive('ngDoFocus', function(){
+    return function(scope, element){
+      scope.ngDoFocus = function(){
+        element[0].focus();  
+      }
+      element[0].focus();
+    };
+  })
 	.config(['$routeProvider','$locationProvider',
   function($routeProvider, $locationProvider) {  	
     $routeProvider.       	
@@ -119,7 +127,7 @@ var app = angular.module('timelineApp',['timelineApp.controllers','dropstore','n
           else{
           	document.getElementById('status').innerHTML = "Synchronized";
           }
-          console.log(_datastore.getSyncStatus().uploading);
+          //console.log(_datastore.getSyncStatus().uploading);
         });
         document.getElementById('status').innerHTML = "Connected";
         if($location.search().next){
@@ -130,7 +138,7 @@ var app = angular.module('timelineApp',['timelineApp.controllers','dropstore','n
         }
         
       })
-      .catch(function(err){               
+      .catch(function(err){                       
         var errStr = err.description || err.response.error || '';
         alert("Error Occured: " + errStr );
       });

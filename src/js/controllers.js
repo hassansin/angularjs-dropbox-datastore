@@ -93,7 +93,7 @@ angular.module('timelineApp.controllers',[])
       $scope.cases =  caseTable.query();      
     }           
   })
-  .controller('activityCtrl',function($scope,$rootScope,$routeParams,$location,$filter,$timeout){
+  .controller('activityCtrl',function($scope,$rootScope,$routeParams,$location,$filter,$timeout,$http){
     var _datastore = null;  
     $scope.isLoaded = !($rootScope.datastore===undefined); //checks if the datastore is loaded and prevents flicker   
     $scope.caseId = $routeParams.caseId;  // current case id        
@@ -152,12 +152,36 @@ angular.module('timelineApp.controllers',[])
           a.caseId = $scope.caseId;
           activityTable.insert(a);                
         }
-      }
-      $scope.ngDoFocus();                
+      }                  
     };
     $scope.deleteAct= function(a){   
       a.deleteRecord();
     };    
+    $scope.downloadAct = function($attach){
+      var activities = $rootScope.datastore.getTable('activities').query({caseId:$scope.caseId});            
+      var c = $rootScope.datastore.getTable('cases').get($scope.caseId);
+      var data = {};
+      data.id = c.getId();
+      data.case = c.getFields();
+      data.activities = [];
+      angular.forEach(activities, function(act, key) {
+        data.activities.push(act.getFields());
+      });
+      $http({
+        method  : 'POST',
+        url     : 'download.php',
+        data    : data,  // pass in data as strings
+        headers : { 'Content-Type': 'application/x-www-form-urlencoded' }  // set the headers so angular passing info as form data (not request payload)
+      })
+      .success(function(data) {        
+        if(data && data.success){          
+          if($attach)
+            window.location.href='mailto:?subject='+ encodeURIComponent(data.title)+'&body=%0D%0A%0D%0A%0D%0A%0D%0A%0D%0A' + encodeURIComponent('Download from: '+data.url);
+          else  
+            window.location.href=data.url;
+        }
+      });
+    }
     $scope.$on('syncStatusChanged',function(event){      
       if(!$rootScope.datastore.getSyncStatus().uploading){
         $scope.dirtyActivites = [];

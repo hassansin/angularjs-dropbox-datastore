@@ -65,13 +65,12 @@ var app = angular.module('timelineApp',['timelineApp.controllers','dropstore','n
 	            });
 	        }
 	    }
-	}])
-  .directive('ngDoFocus', function(){
-    return function(scope, element){
-      scope.ngDoFocus = function(){
-        element[0].focus();  
-      }
-      element[0].focus();
+	}])  
+  .directive('syncFocusWith', function ($timeout) {
+    return function (scope, elem, attrs) {
+      scope.$watch(attrs.syncFocusWith, function () {
+        elem[0].focus();
+      });
     };
   })
 	.config(['$routeProvider','$locationProvider',

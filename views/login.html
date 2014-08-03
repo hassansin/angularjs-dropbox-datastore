@@ -1,1 +1,8 @@
-<h2 class="text-center" style="color:#999">Authenticating ....</h2>
+<div class="row text-center" >
+	<div ng-show="!topCtrl.isLogged" ng-cloak class="text-center">
+		<button ng-click="login()" class="btn btn-primary btn-lg">Login with Dropbox</button>
+	</div>
+	<div ng-show="topCtrl.isLogged" ng-cloak >
+		<h3 class="text-center">Connecting....</h3>
+	</div>	
+</div>

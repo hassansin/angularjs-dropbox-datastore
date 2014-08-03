@@ -4,6 +4,7 @@
 			<table class="table">
 				<thead>
 					<tr>
+						<th><input ng-checked="selectedCases.length==cases.length" ng-click="addAllToSelection($event)" ng-model="checkAll" type="checkbox"></th>
 						<th><a ng-click="orderProp='client';reverse=!reverse" href="">Client</a> {{ orderProp=='client'? reverse?'&#9660;':'&#9650;':''}}</th>
 						<th><a ng-click="orderProp='case_no';reverse=!reverse" href="">Case Number</a> {{ orderProp=='case_no'? reverse?'&#9660;':'&#9650;':''}}</th>
 						<th><a ng-click="orderProp='last_name';reverse=!reverse" href="">Subject Last Name</a> {{ orderProp=='last_name'? reverse?'&#9660;':'&#9650;':''}}</th>
@@ -13,37 +14,39 @@
 					</tr>
 				</thead>
 				<tbody>
-					<tr ng-dblclick="updateCase(case,$event)" ng-repeat="(index, case) in cases | orderBy:caseOrder:reverse" ng-class="{edited:case == editCaseRecord}" class="case-item">						
+					<tr ng-dblclick="updateCase(case,$event)" ng-repeat="(index, case) in cases | orderBy:caseOrder:reverse" ng-class="{edited:case == editCaseRecord}" class="case-item">		
+						<td><input value="{{case.getId()}}" ng-click="addToSelection($event,case.getId())" ng-checked="checkAll || selectedCases.indexOf(case.getId()) >-1" type="checkbox"></td>				
 						<td>
 							<span>{{case.get('client')}}</span>
-							<input ng-keyup="$event.keyCode == 13 && saveCase(case,editCase)"  ng-model="editCase.client" class="form-control" type="text">
+							<input ng-keyup="$event.keyCode == 13 && saveCase(case,editCase)"  ng-model="editCase.client" class="form-control actionEdit" type="text">
 						</td>
 						<td>
 							<span>{{case.get('case_no')}}</span>
-							<input ng-keyup="$event.keyCode == 13 && saveCase(case,editCase)" ng-model="editCase.case_no" class="form-control" type="text">
+							<input ng-keyup="$event.keyCode == 13 && saveCase(case,editCase)" ng-model="editCase.case_no" class="form-control actionEdit" type="text">
 						</td>
 						<td>
 							<span >{{case.get('last_name')}}</span>							
-							<input ng-keyup="$event.keyCode == 13 && saveCase(case,editCase)" ng-model="editCase.last_name" class="form-control" type="text">
+							<input ng-keyup="$event.keyCode == 13 && saveCase(case,editCase)" ng-model="editCase.last_name" class="form-control actionEdit" type="text">
 						</td>
 						<td>
 							<span >{{case.get('first_name')}}</span>	
-							<input ng-keyup="$event.keyCode == 13 && saveCase(case,editCase)" ng-model="editCase.first_name" class="form-control" type="text">													
+							<input ng-keyup="$event.keyCode == 13 && saveCase(case,editCase)" ng-model="editCase.first_name" class="form-control actionEdit" type="text">													
 						</td>
 						<td>
 							<a href="#/activity/{{case.getId()}}"><span>{{case.get('activity_date')| date:'MM/dd/yyyy' }}</span></a>
-							<input ng-keyup="$event.keyCode == 13 && saveCase(case,editCase)" ng-model="editCase.activity_date" class="form-control" type="text">
+							<input ng-keyup="$event.keyCode == 13 && saveCase(case,editCase)" ng-model="editCase.activity_date" class="form-control actionEdit" type="text">
 						</td>
 						<td >																					
-							<a class="action" href="" ng-really-message="Are you sure?" ng-really-click="deleteCase(case)" ><i class="glyphicon glyphicon-trash"></i><span class="sr-only">Close</span></a>
-							<a ng-click="updateCase(case,$event)" class="action" href=""><i class="glyphicon glyphicon-edit"></i><span class="sr-only">Edit</span></a>
+							<a class="actionHover" href="" ng-really-message="Are you sure?" ng-really-click="deleteCase(case)" ><i class="glyphicon glyphicon-trash"></i><span class="sr-only">Close</span></a>
+							<a ng-click="updateCase(case,$event)" class="actionHover" href=""><i class="glyphicon glyphicon-edit"></i><span class="sr-only">Edit</span></a>
 
 							<a ng-click="saveCase(case,editCase)" class="actionEdit" href=""><i class="glyphicon glyphicon-ok"></i><span class="sr-only">Ok</span></a>
 						</td>
 					</tr>
 				</tbody>
 				<tfoot>
-					<tr ng-show="newCase">					
+					<tr ng-show="newCase">	
+						<td></td>				
 						<td><input ng-model="case.client" required class="form-control" type="text"></td>
 						<td><input ng-model="case.case_no" required class="form-control" type="text"></td>
 						<td><input ng-model="case.first_name" required class="form-control" type="text"></td>
@@ -59,5 +62,6 @@
 		<button ng-disabled="caseForm.$invalid" ng-show="newCase" ng-click="addCase(case)" class="btn btn-primary">Submit</button>
 		<button ng-show="newCase" ng-click="newCase=false" class="btn">Cancel</button>
 		<button ng-show="!newCase" ng-click="newCase=true;editCaseRecord = null; " class="btn btn-primary">New Activity</button>
+		<button ng-click="prepareInvoice()" ng-disabled="selectedCases.length==0" ng-show="!newCase" class="btn btn-primary">Invoice Selected Dates</button>
 	</div>
 </div>

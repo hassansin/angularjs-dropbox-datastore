@@ -6,14 +6,12 @@
 html,body{height: 100%;}
 .page{margin-bottom: 50px;}
 .table>thead>tr>th {vertical-align: top}
-.action{visibility: hidden;font-size: 16px;padding-left: 5px;}
-.action-edit{display: none;}
-tr.case-item:hover .action {visibility:visible;}
-tr.case-item td input{display: none}
-tr.edited.case-item td input{display: inline}
+.edited .action{display: none;}
+.actionHover{visibility: hidden;font-size: 16px;padding-left: 5px;}
+tr.case-item:hover .actionHover {visibility:visible;}
 tr.edited td a,tr.edited td span{display: none;}
-tr.case-item td a.actionEdit{display: none;  }
-tr.edited td a.actionEdit{display: inline;}
+tr.case-item td .actionEdit{display: none;  }
+tr.case-item.edited td .actionEdit{display: inline;}
 
 
 ul#case-list-view li{
@@ -35,7 +33,7 @@ div.activity-item{
 
 div.activity-item input,div.activity-item select{display: none}
 div.activity-item.edited input,div.activity-item.edited select{display: inline}
-div.activity-item:hover .action {visibility:visible;}
+div.activity-item:hover .actionHover {visibility:visible;}
 div.activity-item.edited a,div.activity-item.edited span,div.activity-item.edited i.indicator{display: none ;}
 div.activity-item a.actionEdit{display: none;}
 p#status { position: absolute; bottom: 0; right: 20px; float: right; font-size: 16px;color:#c0c0c0;font-weight: bold }
@@ -48,5 +46,5 @@ div.activity-item.edited  {padding: 2px;}
 div.activity-item.edited input{border-radius: 0;}
 
 @media (max-width:767px) {
-	.action {visibility: visible;padding-right: 0;}	
+	.actionHover {visibility: visible;padding-right: 0;}	
 }

@@ -21,6 +21,8 @@ if(isset($_GET['f']) && isset($_GET['t'])){
 //prepare data
 $data = json_decode(file_get_contents('php://input'));
 
+echo json_encode($data);exit;
+
 date_default_timezone_set("UTC"); 
 $timezoneOffset = $data->timezoneOffset;
 $case_date = date('m/d/Y',strtotime($data->case->activity_date)  - $timezoneOffset);
@@ -67,7 +69,7 @@ $table->addCell(6883,$styleCell)->addText('Activity',$fontStyle);
 
 for($i=0; $i<count($activities); $i++){
 	$table->addRow();
-	$table->addCell(1641,$styleCell)->addText(date('h:i a',strtotime($activities[$i]->activity_time) - $timezoneOffset),null,$paragraphStyle);
+	$table->addCell(1641,$styleCell)->addText(date('h:i a',strtotime($activities[$i]->activity_time)),null,$paragraphStyle);
 	$table->addCell(6883,$styleCell)->addText($activities[$i]->activity,null,$paragraphStyle);
 	$table->addRow();
 	$table->addCell(1641,$styleCell)->addText('',null,$paragraphStyle);

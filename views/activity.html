@@ -30,9 +30,9 @@
 		<div class="col-md-8">
 			<span>{{act.get('activity')}}</span>	 
 			<input ng-keyup="$event.keyCode == 13 && saveAct(act,editAct)" ng-model="editAct.activity" type="text" class="form-control" required>								
-			<a class="action pull-right" href="" ng-really-message="Are you sure?" ng-really-click="deleteAct(act)" ><i class="glyphicon glyphicon-trash"></i><span class="sr-only">Delete</span></a>						
+			<a class="actionHover pull-right" href="" ng-really-message="Are you sure?" ng-really-click="deleteAct(act)" ><i class="glyphicon glyphicon-trash"></i><span class="sr-only">Delete</span></a>						
 
-			<a ng-click="updateAct(act,$event)" class="action pull-right" href=""><i class="glyphicon glyphicon-edit"></i><span class="sr-only">Edit</span></a>
+			<a ng-click="updateAct(act,$event)" class="actionHover pull-right" href=""><i class="glyphicon glyphicon-edit"></i><span class="sr-only">Edit</span></a>
 		</div>
 	</div>
 

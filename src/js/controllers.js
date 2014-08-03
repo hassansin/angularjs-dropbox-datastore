@@ -11,17 +11,17 @@ angular.module('timelineApp.controllers',[])
 
     $scope.logout = function(){
       if( dropstoreClient.datastore)        
-        dropstoreClient.datastoreManager.signOut({mustInvalidate:true},function(err){
+        dropstoreClient.datastoreManager.signOut({},function(err){
           if(err){
             alert(err.toString());
           }
-          else{
-            dropstoreClient.datastore = undefined;
-            $scope.topCtrl.isLogged = false;
-            $location.path('/login');
-            dropstoreClient._client.reset({interactive:true});
+          else{            
           }          
-        });      
+        });    
+        dropstoreClient.datastore = undefined;
+        $scope.topCtrl.isLogged = false;
+        $location.path('/login');
+        dropstoreClient._client.reset();  
     };   
   }])
   .controller('loginCtrl',['$scope','$rootScope','$location','$window','dropstoreClient','timelineService',function($scope,$rootScope,$location,$window,dropstoreClient,timelineService){          
@@ -29,7 +29,7 @@ angular.module('timelineApp.controllers',[])
     if(dropstoreClient.datastore===undefined){                        
 
       $scope.login = function(){
-        dropstoreClient._client.authenticate();
+        dropstoreClient._client.authenticate({interactive:true});
       };
     } else{                      
       $location.path('/');      

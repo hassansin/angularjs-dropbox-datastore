@@ -47,16 +47,10 @@ angular.module('dropstore',[])
         dropstoreDatastoreManagerService._datastore.syncStatusChanged.addListener(callback);
         return callback;
       };
-      dropstoreDatastoreManagerService.signOut = function(options){
-        var deferred = $q.defer();
-        dropstoreDatastoreManagerService._client.signOut(options,function(err){         
-          if(err)
-            deferred.reject(err);
-          else{            
-            deferred.resolve();
-          }           
-        });
-        return deferred.promise;
+      dropstoreDatastoreManagerService.signOut = function(options,callback){        
+        dropstoreDatastoreManagerService._client.signOut(options,function(err){                             
+          return callback(err);
+        });        
       }
       return dropstoreDatastoreManagerService;
     };    
